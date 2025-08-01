@@ -1,26 +1,80 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { JwtService } from '@nestjs/jwt';
+
+import * as bcrypt from 'bcrypt';
+
+import { CreateUserDto, LoginUserDto } from './dto';
+import { Auth } from './entities/auth.entity';
+import { JwtPayload } from './interfaces/jwt-payload-user.';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(Auth)
+    private readonly userRepository: Repository<Auth>,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async registerUser(createAuthDto: CreateUserDto) {
+    const { password, ...rest } = createAuthDto;
+    try {
+      const user = this.userRepository.create({
+        ...rest,
+        password: bcrypt.hashSync(password, 10),
+      });
+
+      await this.userRepository.save(user);
+
+      return { user, token: this.getToken({ id: user.id }) };
+    } catch (error) {
+      console.log(error);
+
+      this.handlerDbError(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(loginUserDto: LoginUserDto) {
+    const { password, email } = loginUserDto;
+
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email },
+        select: { email: true, password: true },
+      });
+
+      if (!user)
+        throw new UnauthorizedException(`user with ${email} not valid`);
+
+      if (!bcrypt.compareSync(password, user.password))
+        throw new UnauthorizedException(`password  of user not valid `);
+
+      return { user, token: this.getToken({ id: user.id }) };
+    } catch (error) {
+      console.log(error);
+
+      this.handlerDbError(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  private getToken(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+  private handlerDbError(error: any): never {
+    if (error.code === '23505') {
+      throw new BadRequestException(error.detail);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    console.log(error);
+
+    throw new InternalServerErrorException('please check server  logs');
   }
 }

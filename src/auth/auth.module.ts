@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 @Module({
   controllers: [AuthController],
   providers: [AuthService],
-  imports : [
+  imports : [ 
     ConfigModule, 
     TypeOrmModule.forFeature([Auth]),
     PassportModule.register({defaultStrategy : 'jwt'}),
