@@ -11,14 +11,14 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto, LoginUserDto } from './dto';
-import { Auth } from './entities/auth.entity';
-import { JwtPayload } from './interfaces/jwt-payload-user.';
+import { User } from './entities/auth.entity';
+import { JwtPayload } from './interfaces/jwt-payload-user.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(Auth)
-    private readonly userRepository: Repository<Auth>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -28,6 +28,7 @@ export class AuthService {
       const user = this.userRepository.create({
         ...rest,
         password: bcrypt.hashSync(password, 10),
+        createdAt : new Date()
       });
 
       await this.userRepository.save(user);

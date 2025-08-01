@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({name : 'users'})
-export class Auth {
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -23,9 +23,22 @@ export class Auth {
   })
   isActive: boolean;
 
+ @CreateDateColumn()
+  createdAt : Date
+
   @Column('text', {
     array: true,
     default: ['user'],
   })
   roles: string[];
+
+  @BeforeInsert()
+  checkFieldBeforeInsert(){
+     this.email = this.email.toLowerCase().trim()
+  }
+
+  @BeforeUpdate()
+  checkFieldBeforeUpdate() {
+    this.checkFieldBeforeInsert();
+  }
 }
