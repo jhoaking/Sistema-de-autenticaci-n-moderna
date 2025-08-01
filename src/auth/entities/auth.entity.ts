@@ -1,4 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({name : 'users'})
 export class User {
@@ -31,6 +32,15 @@ export class User {
     default: ['user'],
   })
   roles: string[];
+
+
+ @OneToOne(
+  () => TwoFactor,
+  (twoFactor) => twoFactor.user, 
+  {cascade : true}
+ )
+  twoFactor : TwoFactor
+
 
   @BeforeInsert()
   checkFieldBeforeInsert(){

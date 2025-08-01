@@ -4,6 +4,7 @@ import {TypeOrmModule} from '@nestjs/typeorm'
 
 
 import { AuthModule } from './auth/auth.module';
+import { TwoFactorModule } from './two-factor/two-factor.module';
 
 
 
@@ -21,7 +22,9 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     
-    AuthModule 
+    AuthModule,
+    
+    TwoFactorModule 
   ],
   controllers: [],
   providers: [],
