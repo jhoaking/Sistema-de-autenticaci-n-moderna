@@ -20,7 +20,8 @@ export class TwoFactor {
 
     @OneToOne(
         () => User,
-        (user) => user.twoFactor
+        (user) => user.twoFactor,
+        {eager : true}
     )
     @JoinColumn()
     user : User

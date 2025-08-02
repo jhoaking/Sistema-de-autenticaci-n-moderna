@@ -5,4 +5,7 @@ export class Verify2FADto {
     @IsString()
     @Length(6,6)
     code : string
+
+    @IsString()
+    userId : string
 }

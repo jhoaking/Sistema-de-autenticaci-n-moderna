@@ -1,34 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
 import { TwoFactorService } from './two-factor.service';
-import { CreateTwoFactorDto } from './dto/create-two-factor.dto';
-import { UpdateTwoFactorDto } from './dto/update-two-factor.dto';
+import { Auth } from '../auth/Decorator/auth.decorator';
+import { User } from '../auth/entities/auth.entity';
+import { GetUser } from '../auth/Decorator/get-user.decorator';
+import { Verify2FADto } from './dto/verify-fad.dto';
 
 @Controller('two-factor')
 export class TwoFactorController {
   constructor(private readonly twoFactorService: TwoFactorService) {}
 
-  @Post()
-  create(@Body() createTwoFactorDto: CreateTwoFactorDto) {
-    return this.twoFactorService.create(createTwoFactorDto);
+  @Post('/enable')
+  @Auth()
+  create( @GetUser()  user: User) {
+    return this.twoFactorService.createSecret(user);
   }
 
-  @Get()
-  findAll() {
-    return this.twoFactorService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.twoFactorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTwoFactorDto: UpdateTwoFactorDto) {
-    return this.twoFactorService.update(+id, updateTwoFactorDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.twoFactorService.remove(+id);
+  @Post('/verify')
+  verifyUser(@Body() verifyDto : Verify2FADto){
+    const {code , userId} = verifyDto
+    return this.twoFactorService.verifyToken(userId,code)
   }
 }

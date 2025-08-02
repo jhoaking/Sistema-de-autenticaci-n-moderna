@@ -19,6 +19,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
     private readonly jwtService: JwtService,
   ) {}
 
@@ -28,7 +29,7 @@ export class AuthService {
       const user = this.userRepository.create({
         ...rest,
         password: bcrypt.hashSync(password, 10),
-        createdAt : new Date()
+        createdAt: new Date(),
       });
 
       await this.userRepository.save(user);
@@ -48,6 +49,7 @@ export class AuthService {
       const user = await this.userRepository.findOne({
         where: { email },
         select: { email: true, password: true },
+        relations: ['TwoFactor'],
       });
 
       if (!user)
@@ -55,6 +57,10 @@ export class AuthService {
 
       if (!bcrypt.compareSync(password, user.password))
         throw new UnauthorizedException(`password  of user not valid `);
+
+      if (user.twoFactor.enable) {
+        return { requireFa: true, userId: user.id, message: '2FA required' };
+      }
 
       return { user, token: this.getToken({ id: user.id }) };
     } catch (error) {
@@ -78,4 +84,8 @@ export class AuthService {
 
     throw new InternalServerErrorException('please check server  logs');
   }
+
+  
+
+
 }

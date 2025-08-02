@@ -9,14 +9,17 @@ import { User } from './entities/auth.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy/jwt-strategy';
+import { TwoFactorModule } from 'src/two-factor/two-factor.module';
+import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
 
 
 @Module({
   controllers: [AuthController],
   providers: [AuthService,JwtStrategy],
   imports : [ 
+    TwoFactorModule,
     ConfigModule, 
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User,TwoFactor]),
     PassportModule.register({defaultStrategy : 'jwt'}),
 
     JwtModule.registerAsync({
