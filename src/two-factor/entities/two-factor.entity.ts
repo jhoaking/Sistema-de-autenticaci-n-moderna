@@ -2,7 +2,7 @@ import { User } from "src/auth/entities/auth.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity({name : 'twoFactowAuth'})
+@Entity({name : 'two_factor_auth'})
 export class TwoFactor {
 
     @PrimaryGeneratedColumn('uuid')
@@ -21,8 +21,7 @@ export class TwoFactor {
     @OneToOne(
         () => User,
         (user) => user.twoFactor,
-        {eager : true}
-    )
-    @JoinColumn()
+    ) 
+    @JoinColumn({ name: 'user_id' })
     user : User
 }

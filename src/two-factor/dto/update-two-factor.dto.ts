@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateTwoFactorDto } from './create-two-factor.dto';
+import { ActiveTwoFactor } from './create-two-factor.dto';
 
-export class UpdateTwoFactorDto extends PartialType(CreateTwoFactorDto) {}
+export class UpdateTwoFactorDto extends PartialType(ActiveTwoFactor) {}

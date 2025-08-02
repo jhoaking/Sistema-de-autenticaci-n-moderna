@@ -48,8 +48,8 @@ export class AuthService {
     try {
       const user = await this.userRepository.findOne({
         where: { email },
-        select: { email: true, password: true },
-        relations: ['TwoFactor'],
+        select: { email: true, password: true ,id : true},
+        relations: ['twoFactor'],
       });
 
       if (!user)
@@ -58,8 +58,8 @@ export class AuthService {
       if (!bcrypt.compareSync(password, user.password))
         throw new UnauthorizedException(`password  of user not valid `);
 
-      if (user.twoFactor.enable) {
-        return { requireFa: true, userId: user.id, message: '2FA required' };
+      if (user.twoFactor?.enable) {
+        return { requireFa: true, user_id: user.id, message: '2FA required',token : this.getToken({id : user.id}) };
       }
 
       return { user, token: this.getToken({ id: user.id }) };
@@ -75,11 +75,15 @@ export class AuthService {
     return token;
   }
 
+
+
   private handlerDbError(error: any): never {
     if (error.code === '23505') {
       throw new BadRequestException(error.detail);
+    }else if (error.code === '42703'){
+      throw new BadRequestException(error.detail);
     }
-
+ 
     console.log(error);
 
     throw new InternalServerErrorException('please check server  logs');

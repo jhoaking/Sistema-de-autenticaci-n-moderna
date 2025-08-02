@@ -1,7 +1,15 @@
 import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity({name : 'users'})
+@Entity({ name: 'users' })
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -24,8 +32,8 @@ export class User {
   })
   isActive: boolean;
 
- @CreateDateColumn()
-  createdAt : Date
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Column('text', {
     array: true,
@@ -33,18 +41,14 @@ export class User {
   })
   roles: string[];
 
-
- @OneToOne(
-  () => TwoFactor,
-  (twoFactor) => twoFactor.user, 
-  {cascade : true}
- )
-  twoFactor : TwoFactor
-
+  @OneToOne(() => TwoFactor, 
+  (twoFactor) => twoFactor.user,
+  { cascade: true })
+  twoFactor: TwoFactor;
 
   @BeforeInsert()
-  checkFieldBeforeInsert(){
-     this.email = this.email.toLowerCase().trim()
+  checkFieldBeforeInsert() {
+    this.email = this.email.toLowerCase().trim();
   }
 
   @BeforeUpdate()

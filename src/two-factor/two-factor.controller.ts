@@ -1,4 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
+
+
 import { TwoFactorService } from './two-factor.service';
 import { Auth } from '../auth/Decorator/auth.decorator';
 import { User } from '../auth/entities/auth.entity';
@@ -16,8 +18,8 @@ export class TwoFactorController {
   }
 
   @Post('/verify')
-  verifyUser(@Body() verifyDto : Verify2FADto){
+  verifyUser(@Body() verifyDto : Verify2FADto){ 
     const {code , userId} = verifyDto
-    return this.twoFactorService.verifyToken(userId,code)
+    return this.twoFactorService.verifyTwoFactor(userId,code)
   }
 }

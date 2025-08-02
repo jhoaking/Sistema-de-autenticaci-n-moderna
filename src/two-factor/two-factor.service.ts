@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
 
 import { authenticator } from 'otplib';
+
 import { TwoFactor } from './entities/two-factor.entity';
-import { Repository } from 'typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/auth/entities/auth.entity';
 
 @Injectable()
@@ -12,6 +13,7 @@ export class TwoFactorService {
   constructor(
     @InjectRepository(TwoFactor)
     private readonly twoFactorRepository: Repository<TwoFactor>,
+
     private readonly jwtService: JwtService,
   ) {}
 
@@ -23,6 +25,8 @@ export class TwoFactorService {
       secret,
     );
 
+    
+    
     let twoFactor = await this.twoFactorRepository.findOne({
       where: { user: { id: user.id } },
     });
@@ -49,15 +53,21 @@ export class TwoFactorService {
   async verifyTwoFactor(user_id: string, code: string) {
     const twoFactor = await this.twoFactorRepository.findOne({
       where: { user: { id: user_id } },
+      relations : ['user']
     });
 
     if (!twoFactor || !twoFactor.enable) {
       throw new UnauthorizedException('2FA not enable for this user');
     }
 
+    console.log('code',twoFactor.secret);
+    
     const isValid = this.verifyToken(code, twoFactor.secret);
 
-    if (!isValid) throw new UnauthorizedException('co9de 2FA invalid');
+    console.log("valido", {isValid});
+    
+
+    if (!isValid) throw new UnauthorizedException('code 2FA invalid');
 
     const payload = { id: twoFactor.user.id };
     const token = this.jwtService.sign(payload);
