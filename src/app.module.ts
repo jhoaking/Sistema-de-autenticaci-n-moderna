@@ -27,7 +27,7 @@ import { OauthModule } from './oauth/oauth.module';
     
     TwoFactorModule,
     
-    OauthModule 
+    OauthModule,
   ],
   controllers: [],
   providers: [],
