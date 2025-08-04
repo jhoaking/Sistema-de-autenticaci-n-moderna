@@ -5,6 +5,7 @@ import {TypeOrmModule} from '@nestjs/typeorm'
 
 import { AuthModule } from './auth/auth.module';
 import { TwoFactorModule } from './two-factor/two-factor.module';
+import { OauthModule } from './oauth/oauth.module';
 
 
 
@@ -24,7 +25,9 @@ import { TwoFactorModule } from './two-factor/two-factor.module';
     
     AuthModule,
     
-    TwoFactorModule 
+    TwoFactorModule,
+    
+    OauthModule 
   ],
   controllers: [],
   providers: [],

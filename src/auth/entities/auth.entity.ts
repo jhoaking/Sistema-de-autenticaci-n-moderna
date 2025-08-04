@@ -1,3 +1,4 @@
+import { Oauth } from 'src/oauth/entities/oauth.entity';
 import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
 import {
   BeforeInsert,
@@ -5,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -45,6 +47,15 @@ export class User {
   (twoFactor) => twoFactor.user,
   { cascade: true })
   twoFactor: TwoFactor;
+
+
+
+  @OneToMany(
+    () => Oauth,
+    (oauth) => oauth.user,
+    {cascade : true}
+  )
+  oauthAccount?:Oauth[]
 
   @BeforeInsert()
   checkFieldBeforeInsert() {
