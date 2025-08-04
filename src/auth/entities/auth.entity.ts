@@ -1,3 +1,4 @@
+import { MagicLink } from 'src/magic-link/entities/magic-link.entity';
 import { Oauth } from 'src/oauth/entities/oauth.entity';
 import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
 import {
@@ -56,6 +57,14 @@ export class User {
     {cascade : true}
   )
   oauthAccount?:Oauth[]
+
+
+  @OneToMany(
+    () => MagicLink,
+    (magik_link) => magik_link.user,
+    {cascade : true}
+  )
+  magikLink?: MagicLink[]
 
   @BeforeInsert()
   checkFieldBeforeInsert() {

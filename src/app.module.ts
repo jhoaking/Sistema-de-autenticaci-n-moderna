@@ -6,6 +6,7 @@ import {TypeOrmModule} from '@nestjs/typeorm'
 import { AuthModule } from './auth/auth.module';
 import { TwoFactorModule } from './two-factor/two-factor.module';
 import { OauthModule } from './oauth/oauth.module';
+import { MagicLinkModule } from './magic-link/magic-link.module';
 
 
 
@@ -28,6 +29,8 @@ import { OauthModule } from './oauth/oauth.module';
     TwoFactorModule,
     
     OauthModule,
+    
+    MagicLinkModule,
   ],
   controllers: [],
   providers: [],
