@@ -2,8 +2,6 @@ import { BadRequestException, Injectable, Redirect } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import axios from 'axios';
-
 import { CreateOauthDto } from './dto/create-oauth.dto';
 import { Oauth } from './entities/oauth.entity';
 import { AuthService } from 'src/auth/auth.service';
@@ -57,6 +55,8 @@ export class OauthService {
   }
 
   async getCallBack(code: string) {
+    console.log('CODEEEEEEEEEEE', code);
+
     if (!code) {
       throw new BadRequestException('code not provided');
     }
@@ -91,7 +91,7 @@ export class OauthService {
     });
 
     return {
-      redirect_uri: `http://localhost:3000/login-success?token=${tokenOauth}`,
+      tokenOauth: tokenOauth,
     };
   }
 }
