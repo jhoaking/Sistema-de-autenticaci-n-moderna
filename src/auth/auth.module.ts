@@ -33,6 +33,6 @@ import { TwoFactor } from 'src/two-factor/entities/two-factor.entity';
       }
     })
   ],
-  exports : [TypeOrmModule,PassportModule,JwtModule,JwtStrategy]
+  exports : [TypeOrmModule,PassportModule,JwtModule,JwtStrategy, AuthService]
 })
 export class AuthModule {}

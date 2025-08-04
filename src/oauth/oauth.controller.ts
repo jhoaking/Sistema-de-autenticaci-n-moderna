@@ -1,34 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { OauthService } from './oauth.service';
 import { CreateOauthDto } from './dto/create-oauth.dto';
-import { UpdateOauthDto } from './dto/update-oauth.dto';
+import { Response } from 'express';
 
 @Controller('oauth')
 export class OauthController {
   constructor(private readonly oauthService: OauthService) {}
 
-  @Post()
+  @Post('login')
   create(@Body() createOauthDto: CreateOauthDto) {
     return this.oauthService.create(createOauthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.oauthService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.oauthService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOauthDto: UpdateOauthDto) {
-    return this.oauthService.update(+id, updateOauthDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.oauthService.remove(+id);
+  @Get('login/callback')
+  async callback(
+    @Param('provider') provider : string,
+    @Query('code') code: string, 
+    @Res() res: Response) {
+    const { redirect_uri } = await this.oauthService.getCallBack(code);
+    return res.redirect(redirect_uri);
   }
 }

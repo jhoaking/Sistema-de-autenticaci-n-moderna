@@ -70,7 +70,7 @@ export class AuthService {
     }
   }
 
-  private getToken(payload: JwtPayload) {
+   getToken(payload: JwtPayload) {
     const token = this.jwtService.sign(payload);
     return token;
   }
